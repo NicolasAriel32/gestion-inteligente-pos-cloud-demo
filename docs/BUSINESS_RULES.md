@@ -67,3 +67,11 @@ misma cantidad de días calendario y con el mismo corte local. Fechas de 2000..2
 texto. Ticket promedio al centavo y porcentajes a centésimas, mitad alejándose de cero;
 comparar promedios usa fracciones sin redondeo previo. Base cero: sin porcentaje salvo
 ambos valores cero (0 %). Detalle/contratos en F5_DEVELOPMENT.md y ADR-012.
+
+## Concreción candidata F6
+
+Solo ADMIN importa, respalda y restaura. Importación todo-o-nada/idempotente por UUID,
+actor, contenido/generación y motivo; stock inicial con movimiento y auditoría. CSV no
+actualiza existentes. Restauración requiere contraseña vigente en ambas copias y texto
+RESTAURAR, drena solicitudes y guarda estado previo; interrumpida falla cerrada y necesita
+recuperación explícita autenticada. No cambia reglas de venta/anulación ni autoriza F7.

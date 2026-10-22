@@ -110,6 +110,15 @@ los picos siempre usan tickets. Períodos comparados explícitos, estado vacío 
 con reintento/foco. Solo ADMIN; carga local diferida. Controles y tipografía conservados.
 Capturas reales/axe y revisión visual: [F5_DEVELOPMENT.md](../F5_DEVELOPMENT.md).
 
+## Herramientas F6 candidatas
+
+Vista ADMIN con CSV/vista previa y respaldos/configuración. Importación y restauración
+usan confirmación nativa, avisos con foco, estados de espera y reintento recuperable.
+Archivos tienen controles de 44 px y texto español independiente del navegador; tabla
+acotada a primeros 20, scroll local en móvil. Contraseña solo en estado transitorio,
+nunca en storage/capturas. Se conservan Manrope/amarillo, contraste y movimiento reducido.
+Evidencia real en F6_DEVELOPMENT.md; ayuda PR #6 incorporada tras aprobación posterior.
+
 ## Ayuda integrada
 
 Botón circular ? de 44 px al extremo derecho del encabezado, con nombre accesible Abrir
@@ -118,3 +127,7 @@ con scroll; en móvil búsqueda/tema se apilan. Preguntas en details/summary nat
 pasos numerados. Al abrir enfoca búsqueda; Escape/cierre devuelve foco y Tab/Shift+Tab
 permanece dentro. Conserva Manrope, paleta, contraste y movimiento reducido. Capturas y
 verificación: [USER_HELP_DEVELOPMENT.md](../USER_HELP_DEVELOPMENT.md).
+
+Actualización posterior: PR #6 autorizado e integrado en main 4b40e3f. Candidato F6
+incorpora esa ayuda, mantiene producto 0.5.1 y conserva pendiente Windows 11 limpio.
+La evidencia anterior describe su ejecución original; PR #7 no se fusiona.

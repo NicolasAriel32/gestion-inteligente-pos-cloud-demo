@@ -121,6 +121,16 @@ pos_hour usa zoneinfo Buenos Aires; tzdata proporciona IANA offline donde falta 
 Vista React diferida, AbortController al reemplazar consulta/desmontar, carga/vacío/error y
 reintento explícito; importes BigInt sin Number. Sin servicios cloud ni gráficos remotos.
 
+## Operaciones F6 candidatas
+
+ImportService usa puerto transaccional y helper de alta F3. MaintenanceService usa puerto
+MaintenancePersistence, adaptador SQLite/archivos privados, Backup API y gate asíncrono
+que drena HTTP/scheduler durante restauración. Contenedor de dos miembros conocidos,
+estructura canónica de migraciones, hash y límites; no rutas recibidas por API.
+Runtime serve solo dist/assets/licencias/index; directorios de datos nunca estáticos.
+Launcher y servidor fuente oficial comparten bloqueo de instancia; mantenimiento offline
+explícito y no reparaciones silenciosas. Detalles y límites en F6_DEVELOPMENT.md.
+
 ## Ayuda local de uso (0.5.1)
 
 HelpCenter abre diálogo nativo modal desde encabezado; contenido estático versionado en

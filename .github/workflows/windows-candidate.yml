@@ -1,0 +1,37 @@
+name: Windows F6 candidate
+on:
+  push:
+    branches: [feat/f6-backup-import-distribution]
+    paths: ['backend/**', 'frontend/**', 'packaging/**', '.github/workflows/windows-candidate.yml']
+  pull_request:
+    branches: [main]
+    paths: ['backend/**', 'frontend/**', 'packaging/**', '.github/workflows/windows-candidate.yml']
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build native bundle and installer
+        shell: pwsh
+        run: ./packaging/build-windows.ps1
+      - name: Test installed executable without runtime tools on PATH
+        shell: pwsh
+        run: python packaging/smoke_installer.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: F6-Windows-candidate
+          path: |
+            dist/installer/*.exe
+            dist/GestionInteligentePOS/build-info.json
+            dist/windows-smoke.json
+          retention-days: 7

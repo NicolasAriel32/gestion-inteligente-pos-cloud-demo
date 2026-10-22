@@ -50,7 +50,7 @@ def test_interrupted_index_rolls_back_and_retries(f3_database):
     file.write_text(original)
     command.upgrade(config, 'head')
     with sqlite3.connect(path) as db:
-        assert db.execute('SELECT version_num FROM alembic_version').fetchone() == ('0005_reporting_indexes',)
+        assert db.execute('SELECT version_num FROM alembic_version').fetchone() == ('0006_local_operations',)
 
 
 def test_missing_report_index_refuses_startup(database):

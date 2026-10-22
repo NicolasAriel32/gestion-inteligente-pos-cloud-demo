@@ -2,7 +2,8 @@
 
 ## Objetivo
 Desarrollar Gestión Inteligente POS: sistema local-first para una caja de kiosco argentino.
-El repositorio contiene especificaciones y software local F1–F5 (versión 0.5.1).
+El repositorio contiene software local F1–F5 (0.5.1) y un candidato F6 en desarrollo.
+F6 no se declara validada hasta completar la instalación limpia y recuperación en Windows.
 Consultar ROADMAP para distinguir entregas verificadas, validación física pendiente y
 fases futuras. No usar Lovable ni agregar servicios cloud obligatorios.
 
@@ -63,3 +64,12 @@ Ante conflicto, **detener la implementación relacionada y señalarlo**. No rein
 - No habilitar autogeneración con metadatos vacíos o parciales.
 - Al cambiar el esquema, actualizar el contrato de arranque y probar versiones incompatibles.
 - Documentar cada nuevo hallazgo con causa, fix, prueba de regresión y práctica reutilizable.
+
+## Actualización voluntaria — instrucción del propietario (2026-10-22)
+
+Nunca bloquear el arranque por existir una versión nueva, antigüedad del programa,
+falta de conexión o falta de actualización. La instalación compatible debe seguir
+funcionando offline. El propietario decide si actualiza, manualmente y mediante una
+herramienta externa separada. No agregar comprobaciones remotas obligatorias ni
+actualizadores automáticos/silenciosos. Se mantienen las protecciones de integridad
+y compatibilidad de la base; no modificar datos ni migrar en el arranque normal.

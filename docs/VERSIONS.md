@@ -1,9 +1,10 @@
 # Versiones y estado de entrega
 
 Actualizado: 2026-10-22. Versión de referencia del software: **0.5.1**.
-F1–F5 implementadas y verificadas; F5 fusionada por autorización del propietario en PR #5 (fb85521).
+F1–F5 implementadas y verificadas; F5 fusionada por autorización en fb85521.
 Impresora física de 58 mm, Windows/instalador y piloto conservan sus pendientes.
-F6 no iniciada. La versión del software no certifica esas validaciones.
+F6 candidata implementada y validada en Linux; Windows 11 limpio pendiente.
+La versión del software no certifica esas validaciones.
 
 ## Fuentes verificables
 
@@ -13,7 +14,7 @@ F6 no iniciada. La versión del software no certifica esas validaciones.
 | API / OpenAPI | 0.5.1 en backend/app/main.py, FastAPI.version |
 | Paquete frontend | 0.5.1 en frontend/package.json |
 | Lockfile, raíz y packages[""] | 0.5.1 en frontend/package-lock.json |
-| Esquema SQLite | 0005_reporting_indexes, independiente de la versión del producto |
+| Esquema SQLite | main: 0005_reporting_indexes; candidato F6: 0006_local_operations |
 | Specs funcionales vigentes | Referencia 0.5.1; las secciones futuras siguen identificadas |
 
 lockfileVersion=3 es el formato de npm y no debe cambiarse a 0.5.1.
@@ -103,6 +104,14 @@ Las migraciones anteriores y sus contratos económicos permanecen sin editar.
 Suite/regresión, comandos y build/capturas reales: [F5_DEVELOPMENT.md](../F5_DEVELOPMENT.md).
 F5 en revisión humana, sin merge ni inicio de F6. La versión no certifica hardware/piloto.
 
+## Candidato F6 — no entrega final
+
+Main F5 fue fusionado en fb85521. F6 está autorizada y en desarrollo, con esquema candidato
+0006_local_operations. Tras integrar la ayuda autorizada se mantiene 0.5.1 mientras falta
+Windows 11 limpio; no se etiqueta 0.6.0 final ni se crea release. Al cerrar todos los
+criterios se alinearán juntos producto/API/paquetes/lockfile/metadata a 0.6.0. Ayuda PR #6
+incorporada tras autorización posterior. No hay dependencias de ejecución nuevas; herramientas de build separadas.
+
 
 ## Mejora 0.5.1 — ayuda local
 
@@ -110,3 +119,7 @@ Ayuda rápida por rol, sin nuevas dependencias ni migraciones; esquema permanece
 0005_reporting_indexes. Versiones de paquetes/API/lockfile se alinean a 0.5.1. F5 conserva
 sus resultados históricos y merge autorizado fb85521; F6 no se inicia. Evidencia real y
 metadata instalada: USER_HELP_DEVELOPMENT.md.
+
+Actualización posterior: PR #6 autorizado e integrado en main 4b40e3f. Candidato F6
+incorpora esa ayuda, mantiene producto 0.5.1 y conserva pendiente Windows 11 limpio.
+La evidencia anterior describe su ejecución original; PR #7 no se fusiona.

@@ -8,7 +8,7 @@ from app.infrastructure.database import build_engine, get_db_path
 config = context.config
 if config.config_file_name:
     fileConfig(config.config_file_name)
-path = get_db_path()
+path = config.attributes.get("db_path", get_db_path())
 config.set_main_option("sqlalchemy.url", f"sqlite:///{path}")
 # Sin modelo completo, None rechaza autogenerate. MetaData vacío propondría borrados.
 target_metadata = None

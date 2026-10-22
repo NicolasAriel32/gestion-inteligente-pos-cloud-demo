@@ -38,14 +38,14 @@ def fingerprint(value: object) -> str:
 
 
 class SalesService:
-    def __init__(self, store: SalesPersistence, clock: Callable[[], float]):
-        self.store, self.clock = store, clock
+    def __init__(self, store: SalesPersistence, clock: Callable[[], float], generation: Callable[[], str] = lambda: ""):
+        self.store, self.clock, self.generation = store, clock, generation
 
     def actor(self, tx: SalesUnit, token: str) -> User:
         return tx.session_user(digest(token), int(self.clock()))
 
     @staticmethod
-    def calculate(tx: SalesUnit, items: list[RequestedItem]) -> tuple[Record, list[Product]]:
+    def calculate(tx: SalesUnit, items: list[RequestedItem], generation: str = "") -> tuple[Record, list[Product]]:
         lines: list[Record] = []
         products: list[Product] = []
         total = 0
@@ -65,12 +65,12 @@ class SalesService:
                 "quantity": item["quantity"], "subtotal_cents": subtotal,
             })
             products.append(product)
-        return {"items": lines, "total_cents": total, "quote_fingerprint": fingerprint(lines)}, products
+        return {"items": lines, "total_cents": total, "quote_fingerprint": fingerprint([lines, generation] if generation else lines)}, products
 
     def quote(self, token: str, items: list[RequestedItem]) -> Record:
         with self.store.transaction() as tx:
             self.actor(tx, token)
-            return self.calculate(tx, items)[0]
+            return self.calculate(tx, items, self.generation())[0]
 
     @staticmethod
     def require_sale(tx: SalesUnit, sale_id: int, actor: User) -> Record:
@@ -95,9 +95,9 @@ class SalesService:
                 if previous["request_hash"] != request_hash or previous["user_id"] != actor.id:
                     raise IdentityError(409, "La clave de venta ya se usó con otros datos")
                 return self.detail(tx, previous)
-            calculated, products = self.calculate(tx, items)
+            calculated, products = self.calculate(tx, items, self.generation())
             if calculated["quote_fingerprint"] != quote:
-                raise IdentityError(409, "El catálogo cambió; revisá una nueva cotización antes de confirmar")
+                raise IdentityError(409, "El catálogo cambió o se restauró un respaldo; consultá Historial y revisá una nueva cotización antes de confirmar")
             sale_id = tx.add_sale(actor, key, request_hash, calculated["total_cents"])
             for line, product in zip(calculated["items"], products, strict=True):
                 tx.add_item(sale_id, line)

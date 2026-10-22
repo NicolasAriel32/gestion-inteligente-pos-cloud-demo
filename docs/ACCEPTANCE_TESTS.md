@@ -115,6 +115,14 @@ bloqueadas, estados de carga/vacío/error/reintento, filtros, teclado, foco, con
 movimiento reducido y capturas escritorio/móvil. Resultados reales en F5_DEVELOPMENT.md.
 AT-019/020 y validación física de impresión siguen pendientes; F6 no iniciada.
 
+## Candidato F6 — evidencia parcial
+
+AT-019 ejecutada en SQLite real temporal/Linux: backup WAL/escritor concurrente, restauración
+de historia/stock/usuarios, estado previo ante error, journal/rechazo/recover autenticado.
+CSV nuevo: límites, exactitud, errores, UUID concurrente, rollback, respuesta perdida y roles.
+AT-020 permanece pendiente de instalación limpia Windows 11; scripts o paquete Linux no
+la aprueban. Resultados/comandos/capturas: F6_DEVELOPMENT.md. Impresora física/F7 pendientes.
+
 ## Mejora de ayuda 0.5.1
 
 Botón ? y diálogo sin red, búsqueda local por palabras/acentos y filtro de temas, respuestas

@@ -1,8 +1,8 @@
 # PROJECT_SPEC — Gestión Inteligente POS
 
 - Versión de referencia: 0.5.1 (2026-10-22); ver VERSIONS.md
-- Estado: núcleo F1–F5 implementado y validado localmente; F5 aprobada y fusionada en PR #5 (fb85521).
-  Impresora física/piloto pendientes; F6 sin iniciar.
+- Estado: núcleo F1–F5 implementado y validado localmente; F5 fusionada en PR #5 (fb85521).
+  F6 candidata en desarrollo; Windows limpio, impresora física y piloto pendientes.
 - Moneda: ARS; idioma: español argentino; reportes: America/Argentina/Buenos_Aires
 
 ## Misión

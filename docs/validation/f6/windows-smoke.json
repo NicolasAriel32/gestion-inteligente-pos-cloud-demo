@@ -1,0 +1,15 @@
+{
+  "steps_passed": [
+    "install_per_user",
+    "prepare_explicit_without_python_node_on_PATH",
+    "start_packaged",
+    "second_instance_excluded",
+    "import_sales_void_backup_restore_reports_and_reauthentication",
+    "controlled_shutdown",
+    "reinstall_preserves_database_backups_and_config",
+    "uninstall_preserves_database_backups_and_config"
+  ],
+  "environment": "GitHub hosted Windows Server; not a clean Windows 11 pilot",
+  "child_PATH": "Windows System32 only",
+  "physical_printer": "not tested"
+}

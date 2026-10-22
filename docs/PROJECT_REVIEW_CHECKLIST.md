@@ -81,6 +81,27 @@ Ampliado con los hallazgos H-UI, H-F3 y H-F4 del mismo registro.
 
 Aplicación concreta de esta plantilla a F5 y comandos/resultados: F5_DEVELOPMENT.md.
 
+
+## Respaldo, importación y distribución (incorporado en F6)
+
+- [ ] Probar SQLite Backup API con WAL activo/escritor concurrente; no copiar DB sola.
+- [ ] Cerrar conexiones realmente y comprobar handles/replace/fsync en SO objetivo.
+- [ ] Verificar checksum, integridad, FK, revisión y esquema, tamaños y miembros ZIP.
+- [ ] Drenar escritores/scheduler, guardar estado previo y journal durable antes de restore.
+- [ ] Fallar cerrado tras interrupción; recuperación explícita autenticada, sin bypass.
+- [ ] Revocar sesiones/bootstrap e invalidar intenciones ausentes tras retroceder historia.
+- [ ] CSV: preview sin escritura, backend revalida, dinero exacto/códigos texto, rollback
+  completo e identidad estable tras respuesta perdida y recarga, incluso sin códigos.
+- [ ] Retención solo automática; manuales/pre-restore/externos permanecen; fallo visible.
+- [ ] Runtime loopback/una instancia, puerto ocupado sin matar ajenos, cierre sin huérfanos.
+- [ ] Preparación/migración explícita y datos fuera de binarios; reinstalar/desinstalar
+  conservan DB, configuración y backups, con pruebas nativas reales.
+- [ ] Distinguir build Linux, CI Windows Server y PC Windows 11 limpia; no cerrar fase
+  ni subir versión final por revisar scripts. Registrar dependencias/licencias/checksum.
+
+Aplicación concreta y resultados F6: [F6_DEVELOPMENT.md](../F6_DEVELOPMENT.md).
+Las casillas son plantilla reutilizable; el estado de entrega lo define ROADMAP.
+
 ## Ayuda y documentación integrada
 
 - [ ] Mantener pasos y nombres de controles alineados con las pantallas disponibles.

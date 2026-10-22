@@ -95,3 +95,11 @@ Métricas de cabecera separadas de unidades/ítems; instantáneas de la última 
 por producto/fecha/ID para nombrar ranking. Dos top 10 con empate por ID y 24 horas
 locales; todas las horas empatadas por tickets, vacío sin pico. Sin entidad comercial
 nueva: 0005 agrega un índice. Agregados en texto decimal exacto, no modifican F4.
+
+## Operaciones locales F6 candidatas
+
+0006 agrega csv_imports con UUID/actor/hash/IDs/UTC y maintenance_state singleton con
+programación, último estado y generación. Importación solo de productos nuevos, reutiliza
+alta/INITIAL/auditoría F3 en una transacción. No guarda CSV crudo ni modifica historia.
+Restaurar cambia la generación que participa de fingerprints de cotización/importación,
+revoca sesiones y audita, evitando reenvío automático de intentos posteriores al snapshot.

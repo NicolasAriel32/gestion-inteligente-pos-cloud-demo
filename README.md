@@ -134,6 +134,31 @@ Contrato OpenAPI: GET /api/reports/summary. Dinero/unidades agregadas viajan com
 decimal exacto y se formatean con BigInt; los contratos de ventas F4 no cambian.
 [Criterios y evidencia](F5_DEVELOPMENT.md) · [capturas](docs/screenshots/f5/).
 
+## F6 candidata — respaldos, CSV y distribución
+
+F6 está autorizada y en desarrollo, **no se declara terminada** hasta probar instalación
+limpia/recuperación en Windows 11. F5 fue fusionada en fb85521; la ayuda PR #6 fue
+integrada en main 4b40e3f. Producto candidato conserva 0.5.1 hasta validar F6 y alinear entrega 0.6.0.
+
+ADMIN dispone de Herramientas: CSV de productos nuevos (vista previa/confirmación,
+500 filas/1 MiB), respaldos manuales/automáticos, descarga externa y restauración con
+contraseña/aprobación. Esquema nuevo **0006_local_operations**; migración explícita,
+no ejecutar sobre datos comerciales para probar. Se conservan los comandos de desarrollo.
+
+Launcher opcional de distribución: desde backend, `python -m app.runtime --prepare`
+(preparación explícita), luego `python -m app.runtime`; requiere frontend compilado.
+Build Windows nativo: `packaging/build-windows.ps1`. La PC cliente usará el ejecutable
+empaquetado sin Python/Node externos. No hay instalador Windows certificado por Linux.
+
+[Procedimientos de uso/backup/CSV/actualización](docs/F6_OPERATIONS.md) ·
+[Validación Windows pendiente](docs/WINDOWS_VALIDATION.md) ·
+[Diseño y resultados reales](F6_DEVELOPMENT.md).
+
+Build y smoke nativos aprobados en Windows Server 2025; [artefacto candidato y checksums](docs/WINDOWS_VALIDATION.md).
+Sigue pendiente Windows 11 limpio. La instalación compatible seguirá arrancando sin
+actualizar aunque exista otra versión; actualizar es decisión manual del propietario
+y podrá hacerse con una herramienta externa separada (ADR-015).
+
 ## Ayuda integrada
 
 El botón **?** en la esquina superior derecha abre guías rápidas sin salir de la pantalla.
@@ -145,3 +170,7 @@ guías de su rol. Sin sesión sigue disponible la ayuda de acceso/conexión/impr
 El contenido funciona sin internet y no ejecuta operaciones. Cerrar o presionar Escape
 regresa al trabajo conservando los campos completados. No requiere dependencias ni
 migraciones nuevas. [Diseño, validación y capturas](USER_HELP_DEVELOPMENT.md).
+
+Actualización posterior: PR #6 autorizado e integrado en main 4b40e3f. Candidato F6
+incorpora esa ayuda, mantiene producto 0.5.1 y conserva pendiente Windows 11 limpio.
+La evidencia anterior describe su ejecución original; PR #7 no se fusiona.

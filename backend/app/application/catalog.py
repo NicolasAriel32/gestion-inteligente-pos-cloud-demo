@@ -122,23 +122,27 @@ class CatalogService:
             return product if actor.role == "ADMIN" else replace(product, cost_cents=None)
 
     def create_product(self, token: str, data: Record) -> Product:
+        with self.store.transaction(write=True) as tx:
+            actor = self.actor(tx, token, admin=True)
+            return self.create_in_transaction(tx, actor, data)
+
+    @classmethod
+    def create_in_transaction(cls, tx: CatalogUnit, actor: User, data: Record) -> Product:
         data = data.copy()
         initial = data.pop("initial_stock", 0)
         reason = data.pop("initial_reason", None)
         if initial and not reason:
             raise IdentityError(422, "Indicá el motivo del stock inicial")
-        with self.store.transaction(write=True) as tx:
-            actor = self.actor(tx, token, admin=True)
-            self.check_category(tx, data.get("category_id"))
-            if tx.code_exists(data.get("code")):
-                raise IdentityError(409, "El código ya está en uso")
-            product = tx.save_product({**data, "stock_quantity": 0})
-            if initial:
-                tx.add_movement(actor, product, initial, reason, "INITIAL")
-                tx.change_stock(product.id, initial)
-                product = self.require_product(tx, product.id)
-            tx.event(actor, "PRODUCT_CREATED", "products", product.id, {"after": asdict(product)})
-            return product
+        cls.check_category(tx, data.get("category_id"))
+        if tx.code_exists(data.get("code")):
+            raise IdentityError(409, "El código ya está en uso")
+        product = tx.save_product({**data, "stock_quantity": 0})
+        if initial:
+            tx.add_movement(actor, product, initial, reason, "INITIAL")
+            tx.change_stock(product.id, initial)
+            product = cls.require_product(tx, product.id)
+        tx.event(actor, "PRODUCT_CREATED", "products", product.id, {"after": asdict(product)})
+        return product
 
     def update_product(self, token: str, product_id: int, changes: Record) -> Product:
         with self.store.transaction(write=True) as tx:

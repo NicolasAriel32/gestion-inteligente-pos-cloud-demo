@@ -39,7 +39,7 @@ async function stop(child?: ChildProcess) {
 async function screenshot(page: Page, name: string) {
   const inventoryScreen = name.startsWith('catalog-') || name.startsWith('inventory-')
   const salesScreen = ['checkout-', 'receipt-', 'history-', 'void-'].some(prefix => name.startsWith(prefix))
-  const destination = name.startsWith('help-') ? process.env.POS_HELP_CAPTURE_DIR : name.startsWith('reports-') ? process.env.POS_F5_CAPTURE_DIR : salesScreen ? process.env.POS_F4_CAPTURE_DIR ?? captures : inventoryScreen ? process.env.POS_F3_CAPTURE_DIR ?? captures : captures
+  const destination = name.startsWith('help-') ? process.env.POS_HELP_CAPTURE_DIR : name.startsWith('tools-') ? process.env.POS_F6_CAPTURE_DIR : name.startsWith('reports-') ? process.env.POS_F5_CAPTURE_DIR : salesScreen ? process.env.POS_F4_CAPTURE_DIR ?? captures : inventoryScreen ? process.env.POS_F3_CAPTURE_DIR ?? captures : captures
   if (!destination) return
   mkdirSync(destination, { recursive: true })
   // Las capturas solo se toman con campos secretos vacíos.
@@ -534,6 +534,65 @@ test('identidad, inventario y caja locales, permisos, reintentos, impresión y r
     await worker.getByLabel('Contraseña', { exact: true }).fill('E2e-password-worker-42')
     await worker.getByRole('button', { name: 'Ingresar', exact: true }).click()
     await expect(worker.getByRole('alert')).toHaveText('Usuario o contraseña incorrectos')
+    // F6: importación confirmada/recuperada, respaldo real y restauración con reautenticación.
+    await page.getByRole('button', { name: 'Herramientas', exact: true }).click()
+    await expect(page.getByRole('heading', { name: 'Respaldos de tu negocio', exact: true })).toBeVisible()
+    const csv = 'nombre;codigo;precio;stock_inicial;stock_minimo\nProducto CSV;00991;1,25;3;1\n'
+    await page.getByLabel('Archivo CSV', { exact: true }).setInputFiles({ name: 'productos.csv', mimeType: 'text/csv', buffer: Buffer.from(csv) })
+    await expect(page.getByRole('heading', { name: 'Vista previa: 1 producto válido', exact: true })).toBeVisible()
+    await page.getByLabel('Motivo de la carga', { exact: true }).fill('Carga de prueba CSV')
+    await screens(page, 'tools-preview')
+    const importRequests: unknown[] = []
+    await page.route('**/api/imports/products/confirm', async route => {
+      importRequests.push(route.request().postDataJSON())
+      if (importRequests.length === 1) {
+        const committed = await route.fetch()
+        expect(committed.status()).toBe(200)
+        return route.abort('failed')
+      }
+      return route.continue()
+    })
+    await page.getByRole('button', { name: 'Revisar importación', exact: true }).click()
+    await expect(page.getByRole('button', { name: 'Cancelar', exact: true })).toBeFocused()
+    await page.getByRole('button', { name: 'Confirmar importación', exact: true }).press('Enter')
+    await expect(page.getByRole('button', { name: 'Reintentar la misma importación', exact: true })).toBeVisible()
+    await page.reload()
+    await page.getByRole('button', { name: 'Herramientas', exact: true }).click()
+    await page.getByRole('button', { name: 'Reintentar la misma importación', exact: true }).click()
+    await expect(page.getByRole('status').filter({ hasText: 'Importación recuperada o completada: 1 producto.' })).toBeVisible()
+    expect(importRequests).toHaveLength(2)
+    expect(importRequests[0]).toEqual(importRequests[1])
+    expect(await page.evaluate(async () => (await fetch('/api/products?search=00991').then(r => r.json())).total)).toBe(1)
+    await page.getByRole('button', { name: 'Crear respaldo ahora', exact: true }).click()
+    await expect(page.getByRole('status').filter({ hasText: 'Respaldo creado y verificado.' })).toBeVisible()
+    await screens(page, 'tools-backups')
+    // Descargar para guardar externamente y volver a incorporar sin reemplazar datos.
+    const downloadEvent = page.waitForEvent('download')
+    await page.getByRole('button', { name: 'Descargar', exact: true }).first().click()
+    const downloaded = await downloadEvent
+    const localBackup = await downloaded.path()
+    expect(localBackup).not.toBeNull()
+    await page.getByLabel('Incorporar respaldo externo (solo archivos de confianza)', { exact: true }).setInputFiles(localBackup!)
+    await expect(page.getByRole('status').filter({ hasText: 'Respaldo externo validado.' })).toBeVisible()
+    // Dato posterior que debe desaparecer al restaurar la copia elegida.
+    expect(await page.evaluate(async () => {
+      const me = await fetch('/api/auth/me').then(r => r.json())
+      return (await fetch('/api/products', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': me.csrf_token }, body: JSON.stringify({ name: 'Posterior a respaldo', price_cents: 100 }) })).status
+    })).toBe(201)
+    await page.getByRole('button', { name: 'Preparar restauración', exact: true }).first().click()
+    await page.getByLabel('Contraseña ADMIN para restaurar', { exact: true }).fill('E2e-password-owner-42')
+    await page.getByLabel('Escribí RESTAURAR', { exact: true }).fill('RESTAURAR')
+    await page.getByRole('button', { name: 'Revisar restauración', exact: true }).click()
+    // No capturar campos secretos poblados; la confirmación se prueba por teclado.
+    await page.getByRole('button', { name: 'Confirmar restauración', exact: true }).press('Enter')
+    await expect(page.getByRole('heading', { name: 'Ingresar', exact: true })).toBeVisible()
+    await page.getByLabel('Usuario', { exact: true }).fill('owner')
+    await page.getByLabel('Contraseña', { exact: true }).fill('E2e-password-owner-42')
+    await page.getByRole('button', { name: 'Ingresar', exact: true }).click()
+    await expect(page.getByRole('button', { name: 'Herramientas', exact: true })).toBeVisible()
+    expect(await page.evaluate(async () => (await fetch('/api/products?search=Posterior').then(r => r.json())).total)).toBe(0)
+    expect(await page.evaluate(async () => (await fetch('/api/products?search=00991').then(r => r.json())).items[0].stock_quantity)).toBe(3)
+    expect(await page.evaluate(async () => (await fetch('/api/reports/summary').then(r => r.json())).current.sales)).toBe('1')
     await page.getByRole('button', { name: 'Cerrar sesión', exact: true }).click()
     await expect(page.getByRole('heading', { name: 'Ingresar', exact: true })).toBeVisible()
     expect(external).toEqual([])

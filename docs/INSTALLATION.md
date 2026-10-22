@@ -82,3 +82,17 @@ sobre datos comerciales. Arranque verifica también índice de reportes. Actuali
 dependencias declaradas incorpora tzdata local para zoneinfo en Windows; no hay descarga
 al operar. Comandos de desarrollo conservados; evidencia aislada en F5_DEVELOPMENT.md.
 No hay instalador, backups o validación física de impresión nuevos en esta fase.
+
+## Distribución F6 candidata
+
+Scripts PyInstaller 6.16.0 onedir/Inno Setup 6.x en packaging; frontend/IANA/licencias y
+migraciones incluidos. Instala por usuario bajo Programs, mientras datos permanecen en
+GestionInteligentePOS/data, fuera de binarios. No se borran al desinstalar. Preparación y
+actualización requieren confirmación explícita --prepare, respaldo previo y ADMIN si ya
+existe. Launcher abre navegador después de health verificado, solo loopback y mutex/lock.
+Procedimientos: [F6_OPERATIONS.md](F6_OPERATIONS.md). Pruebas pendientes de Windows 11
+limpio: [WINDOWS_VALIDATION.md](WINDOWS_VALIDATION.md). No afirmar soporte por build Linux.
+
+Build/smoke Windows Server aprobados: evidencia y artefacto en WINDOWS_VALIDATION.md.
+Windows 11 limpio conserva su checklist pendiente. Nunca bloquear arranque por versión
+nueva, antigüedad o falta de internet; actualización voluntaria externa según ADR-015.

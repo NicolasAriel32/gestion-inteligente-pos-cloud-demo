@@ -1,0 +1,12 @@
+{
+  "platform": "posix",
+  "PATH": "empty in child",
+  "steps_passed": [
+    "prepare_PATH_empty",
+    "start_and_single_instance",
+    "import_and_checkout",
+    "backup_restore_stock_sales_reports",
+    "controlled_shutdown"
+  ],
+  "windows11_clean": "not tested"
+}

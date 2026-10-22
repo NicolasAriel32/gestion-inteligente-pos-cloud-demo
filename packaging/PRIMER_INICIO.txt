@@ -1,0 +1,53 @@
+GESTIÓN INTELIGENTE POS — INSTALACIÓN DE PRUEBA
+
+Este es un candidato de prueba: F6 conserva pendiente su validación en Windows 11
+limpio. Incluye ayuda con el botón ?. Usar datos ficticios para esta comprobación.
+
+1. Instalar en Windows 11 de 64 bits con el instalador recibido.
+   El programa incluye sus recursos; no necesita instalar Python, Node o un servidor
+   de base de datos. Si ya existe una instalación con datos del comercio, conservarla
+   y realizar la prueba desde otro usuario de Windows. No borrar ni reinicializarla.
+
+2. En una instalación nueva, elegir «Preparar base local» al terminar el instalador
+   o abrir «Preparar o actualizar base local» desde el menú Inicio.
+   Escribir PREPARAR en la ventana para crear la base nueva. Este paso es explícito
+   y no se repite para abrir la aplicación normalmente. Si pide contraseña de una
+   cuenta ADMIN existente, hay una base previa: detener la prueba y conservarla.
+
+3. Abrir «Gestión Inteligente POS» desde el menú Inicio. Se abrirá el navegador en:
+   http://127.0.0.1:8765
+   Esa dirección pertenece a esta PC y funciona sin internet.
+
+4. Para crear la primera cuenta ADMIN, obtener el secreto inicial desde este archivo
+   del perfil de Windows, usando el Explorador (pegar la ruta en la barra):
+   %LOCALAPPDATA%\GestionInteligentePOS\config\setup-token.txt
+   Ingresarlo solo en la pantalla local del POS, junto con el usuario y una contraseña
+   propia de 12 a 128 caracteres. No compartir secretos ni contraseñas en chats.
+   Después del alta, eliminar ese archivo de secreto inicial. La aplicación no tiene
+   una cuenta o contraseña de administrador predeterminada.
+
+5. Una vez instalado, desconectar Wi-Fi o el cable de internet para probar. Mantener
+   el programa abierto. Crear un producto ficticio con stock y registrar una venta;
+   comprobar historial, reportes y el botón ?. La ayuda también funciona sin internet.
+
+6. En Herramientas, crear y descargar un respaldo. Antes de probar restauración,
+   comprobar que todos los datos sean ficticios: restaurar retrocede la base a la fecha
+   de la copia y cierra las sesiones. Revisar la fecha y las confirmaciones de pantalla.
+
+7. Para terminar, usar Herramientas → Cerrar aplicación. Cerrar solamente la pestaña
+   del navegador deja el servicio local abierto. Volver a abrir el acceso directo
+   permite comprobar que los productos y ventas se conservaron.
+
+Si el secreto inicial venció antes de crear ADMIN, se puede renovar explícitamente:
+GestionInteligentePOS.exe --renew-setup
+Esto solo funciona mientras no exista una cuenta ADMIN. No borra ni reemplaza datos.
+
+Actualizar siempre es voluntario y manual. Tener una versión anterior o no disponer
+de internet no bloquea el arranque de una instalación compatible. El programa no
+descarga actualizaciones ni necesita servicios externos para operar.
+
+Datos, configuración y respaldos se guardan fuera de los binarios, bajo:
+%LOCALAPPDATA%\GestionInteligentePOS
+
+La validación física de impresora de 58 mm sigue pendiente. No se certifica un modelo
+por generar un PDF. Conservar cualquier error observado para la revisión del piloto.

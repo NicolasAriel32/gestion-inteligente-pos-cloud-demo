@@ -1,7 +1,7 @@
 # ROADMAP — trabajo incremental SDD
 
-**Versión de referencia**: 0.5.1 (2026-10-22); esquema 0005_reporting_indexes.
-**Estado actual**: F1–F5 implementadas y validadas técnicamente; F5 aprobada y fusionada (PR #5, fb85521).
+**Versión de referencia**: 0.5.1 (2026-10-22); esquema candidato 0006_local_operations.
+**Estado actual**: F1–F5 implementadas y validadas técnicamente; F5 fusionada por autorización (fb85521).
 Identidad local, empleados, catálogo e inventario; evidencia en
 [F1_DEVELOPMENT.md](../F1_DEVELOPMENT.md), [F2_DEVELOPMENT.md](../F2_DEVELOPMENT.md) y
 [F3_DEVELOPMENT.md](../F3_DEVELOPMENT.md). F3 aprobada y fusionada a main en 3848d55.
@@ -62,18 +62,20 @@ Cada etapa empieza con criterios de aceptación claros y termina con pruebas rep
 - [x] Filtros y estados sin datos.
 - Aceptación: reportes excluyen anuladas y coinciden con datos de prueba.
 
-Software F5 verificado localmente y fusionado por autorización del propietario en PR #5 (fb85521).
-Evidencia y límites: F5_DEVELOPMENT.md. F6 no iniciada ni autorizada.
+Software F5 verificado y fusionado en PR #5 (fb85521).
+F6 autorizada por instrucción explícita posterior; implementación candidata en F6_DEVELOPMENT.md.
 
 Mejora posterior 0.5.1: ayuda de uso local con guías rápidas y buscador, sin avanzar F6.
 Evidencia en USER_HELP_DEVELOPMENT.md; revisión de la mejora independiente del merge F5.
 
 ## F6 — Respaldo, importación y distribución
-- [ ] Backup consistente y restauración probada.
-- [ ] CSV de productos con vista previa/validación (mejora para onboarding piloto).
-- [ ] Build Windows, instalador y arranque único.
-- [ ] Actualizaciones manuales documentadas.
+- [x] Backup consistente y restauración probados en SQLite temporal/Linux; falta PC Windows objetivo.
+- [x] CSV de altas nuevas con vista previa/validación, confirmación atómica y reintentos.
+- [x] Build Windows, instalador y arranque único comprobados en CI Windows Server 2025; PC Windows 11 limpia pendiente.
+- [x] Actualizaciones manuales documentadas; comprobación Windows pendiente.
 - Aceptación: instalación limpia sin herramientas de desarrollo y recuperación demostrada.
+- **F6 pendiente de cierre**: scripts/paquete candidato y validación Linux no certifican Windows 11 limpio.
+  Ver F6_DEVELOPMENT.md y WINDOWS_VALIDATION.md. F7 no iniciada.
 
 ## F7 — Piloto y comercialización
 - [ ] Pruebas de flujo real con dueño y empleado.
@@ -83,3 +85,7 @@ Evidencia en USER_HELP_DEVELOPMENT.md; revisión de la mejora independiente del 
 
 ## Futuro, no MVP
 MySQL multi-PC, servidor remoto, MCP, n8n, actualizador asistido, pagos online, varias cajas, facturación fiscal. Cada evolución requiere nueva spec y análisis de riesgos.
+
+Actualización posterior: PR #6 autorizado e integrado en main 4b40e3f. Candidato F6
+incorpora esa ayuda, mantiene producto 0.5.1 y conserva pendiente Windows 11 limpio.
+La evidencia anterior describe su ejecución original; PR #7 no se fusiona.

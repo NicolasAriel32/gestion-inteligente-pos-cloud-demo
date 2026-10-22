@@ -1,0 +1,12 @@
+{
+  "os": "Linux",
+  "products": 500,
+  "sales": 1000,
+  "database_bytes": 1142784,
+  "preview_ms": 29.15,
+  "import_ms": 202.8,
+  "report_ms": 10.79,
+  "backup_ms": 20.89,
+  "restore_ms": 565.44,
+  "includes_admin_reauthentication": true
+}

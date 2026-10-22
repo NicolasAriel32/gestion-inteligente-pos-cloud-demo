@@ -1,7 +1,7 @@
 # PERSISTENCE — base de datos, transacciones y respaldos
 
 - Versión de referencia: 0.5.1 (2026-10-22)
-- Implementado: SQLite + SQLAlchemy + Alembic en una sola PC, esquema 0005_reporting_indexes.
+- Implementado: SQLite + SQLAlchemy + Alembic en una sola PC, esquema candidato 0006_local_operations.
   Respaldo y restauración siguen como diseño F6, sin implementación validada.
 
 ## Ubicación
@@ -137,3 +137,14 @@ una venta entre KPIs y rankings y conserva una vista consistente; siguiente repo
 excluye la anulada. Índice cubriente por estado/fecha y UNIQUE(sale_id,product_id) existente.
 Agregación Python exacta dentro de SQLite mediante pos_sum; salida decimal textual evita
 overflow int64 y transporte JS inseguro. Sin caches ni tablas resumen que puedan divergir.
+
+## Candidato F6
+
+0006_local_operations agrega dos tablas, sin reconstruir ni editar migraciones previas.
+CSV conserva transacción BEGIN IMMEDIATE de catálogo con movimiento/auditoría; UUID/hash
+se confirma junto con todas las altas. Backup API produce snapshot consistente con WAL
+activo; nunca copia pos.db a mano. Validación integrity_check/FK/esquema canónico/hash.
+Restore drena solicitudes, copia previa, journal durable y Backup API al destino, sin
+renombrar sobre WAL. Revalida, cambia generación, cierra sesiones y audita. Fallo ordinario
+recupera previo; journal pendiente rechaza arranque hasta recuperación ADMIN explícita.
+Pruebas/limitaciones de interrupción y Windows en F6_DEVELOPMENT.md y F6_OPERATIONS.md.

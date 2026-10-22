@@ -456,6 +456,46 @@ AGENTS.md del nuevo repositorio; este archivo no configura automáticamente otro
 - Práctica: mantener estable el estado durante toda la captura/auditoría y comprobar
   el artefacto, no inferir su contenido del nombre ni de una aserción previa.
 
+
+## H-F6-001 — Contexto SQLite no cierra la conexión
+
+- Causa: `with sqlite3.connect(...)` confirma/revierte, pero no libera el handle.
+  Linux tolera borrar archivos abiertos; Windows puede impedir replace/cleanup.
+- Fix: contextlib.closing en snapshot/validación/credenciales/migración y pruebas.
+  fsync del contenedor usa descriptor writable; journal se publica durably por SO.
+- Regresión: backup/restore real y paquete Linux pasan. Portabilidad Windows no se da
+  por demostrada: workflow nativo y PC Windows 11 conservan evidencia independiente.
+- Práctica: distinguir transacción de vida del recurso y probar el SO de distribución.
+
+## H-F6-002 — Restaurar retrocede historia y puede revivir intentos/sesiones
+
+- Causa: un snapshot anterior puede borrar una venta confirmada después y contener
+  sesiones vigentes; un reintento automático del navegador podría cobrar otra vez.
+- Fix: drenaje exclusivo, snapshot previo, journal durable, validación y recuperación
+  autenticada; revocar sesiones/bootstrap y rotar generación de cotización/importación.
+  UUID existente devuelve historia; intento ausente con hash anterior exige nueva revisión.
+- Regresión: test_backup_restore_preserves_history_and_revokes_sessions comprueba ventas,
+  anuladas, stock, reporte y rechazo 409 del intento posterior. Fallo intermedio recupera
+  estado previo; journal bloquea arranque, contraseña incorrecta no recupera.
+- Práctica: restauración es una operación comercial además de una copia de bytes.
+
+## H-F6-003 — CSV con respuesta perdida necesita identidad durable
+
+- Causa: regenerar UUID tras timeout duplica altas, especialmente con código vacío.
+- Fix: guardar mismo UUID/hash/actor/resultado junto a todas las altas/INITIAL/auditoría
+  en BEGIN IMMEDIATE. Intención en sessionStorage por usuario antes del POST.
+- Regresión: concurrentes/mid-failure API y E2E corta respuesta después del commit,
+  recarga/reintenta mismo body y verifica un único producto. Valores enteros exactos.
+- Práctica: probar respuesta perdida, no solo repetir una respuesta ya recibida.
+
+## H-F6-004 — Puerto recién cerrado y pruebas de volumen
+
+- Causa: socket POSIX puede quedar TIME_WAIT; pytest construye IDs enormes con CSV 1 MiB.
+- Fix: SO_REUSEADDR solo POSIX; Windows mantiene SO_EXCLUSIVEADDRUSE. IDs pytest cortos.
+- Regresión: 28 pruebas focalizadas posteriores y launcher empaquetado pasan. Puerto
+  ocupado falla sin matar al dueño. Suite completa 171 backend aprobadas.
+- Práctica: aislar fallos del harness y de producto; no ampliar timeouts para ocultarlos.
+
 ## H-HELP-001 — El filtro por rol puede conservar explicaciones de permisos
 
 - Prioridad P3; corregido en la prueba, sin fallo de autorización del producto.

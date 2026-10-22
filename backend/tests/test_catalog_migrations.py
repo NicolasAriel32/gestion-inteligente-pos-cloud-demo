@@ -96,6 +96,6 @@ def test_f3_failure_preserves_f2_and_can_retry(old_database):
     command.upgrade(config, "head")
     with sqlite3.connect(path) as db:
         assert db.execute("SELECT version_num FROM alembic_version").fetchone() == (
-            "0005_reporting_indexes",
+            "0006_local_operations",
         )
         assert db.execute("SELECT COUNT(*) FROM users").fetchone() == (1,)

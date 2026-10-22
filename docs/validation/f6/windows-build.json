@@ -1,0 +1,18 @@
+{
+  "product_version": "0.5.0",
+  "phase": "F6 candidate",
+  "build_os": "Windows-2025Server-10.0.26100-SP0",
+  "python": "3.12.10",
+  "pyinstaller": "6.16.0",
+  "source_commit": "b0297dc3645bd5a2da3702f74e26413b41fa0784",
+  "workflow_url": "https://github.com/NicolasAriel32/gestion-inteligente-pos/actions/runs/39834898033",
+  "artifact_id": 12451205519,
+  "artifact_sha256": "a930691255cf5504d4da38bd611c74d37fee03b6b76b5f8c95279d089857da62",
+  "installer": "installer/GestionInteligentePOS-0.5.0-F6-candidate-setup.exe",
+  "installer_sha256": "cf8be1920bfd01eceea5237a2c73a500e7b7f3d70f01edcd1a64caf52714cef7",
+  "installer_bytes": 19395208,
+  "inno_setup": "6.7.1",
+  "node_build": "22.23.3",
+  "npm_build": "10.9.9",
+  "windows11_clean": "not tested"
+}
