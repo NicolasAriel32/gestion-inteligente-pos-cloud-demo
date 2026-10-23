@@ -1,0 +1,15 @@
+{
+  "name": "gestion-inteligente-pos-cloud-demo",
+  "version": "0.5.1",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "npm run build:workers",
+    "build:workers": "npm --prefix frontend ci && npm --prefix frontend run build -- --mode cloud-demo",
+    "test:workers": "node --test cloudflare/worker.test.mjs",
+    "check:workers": "wrangler deploy --dry-run --outdir .wrangler/dry-run",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": { "wrangler": "4.152.0" }
+}

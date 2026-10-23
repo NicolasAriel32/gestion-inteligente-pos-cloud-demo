@@ -2,6 +2,8 @@
 :root { font-family: 'Manrope', sans-serif; font-synthesis: none; font-optical-sizing: auto; color: #171714; background: #ffd633; --ink: #171714; --yellow: #ffd633; --surface: #fff3b0; --field: #fff9dc; --muted: #514924; --border: #81723c; --line: #c6b35e; --radius: 16px; --motion: 150ms; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
 * { box-sizing: border-box; }
 body { margin: 0; min-width: 320px; }
+.cloud-demo-banner { margin-top: 16px; padding: 14px 18px; border: 1px solid var(--ink); border-radius: 8px; background: var(--surface); font-size: 12px; }
+@media print { .cloud-demo-banner { display: none; } }
 button, input { font: inherit; }
 button { -webkit-tap-highlight-color: transparent; }
 button, a, input { touch-action: manipulation; }

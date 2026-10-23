@@ -1,0 +1,2 @@
+# Wrangler local development only. Copy to ignored .dev.vars and insert the actual Render URL.
+BACKEND_URL=https://your-actual-service.onrender.com

@@ -120,3 +120,23 @@ búsqueda y temas; no requiere servicios, IA ni conexión. Muestra pasos según 
 funciones pendientes sin presentarlas disponibles. No realiza acciones comerciales ni
 reemplaza permisos backend. Es una mejora de uso separada de F6; F6 no está iniciada.
 Diseño previo/criterios/resultados en USER_HELP_DEVELOPMENT.md.
+
+### ADR-015 — Clon independiente de demo funcional remota (AUTORIZADA, 2026-10-23)
+
+El propietario solicitó probar todas las funciones implementadas desde un enlace de
+Cloudflare, sin instalar software en la PC del trabajo, y guardar la adaptación en
+un repositorio clonado con nombre diferencial para desplegarlo desde su rama principal.
+
+Se conserva el backend real Python/FastAPI/SQLite, sus transacciones y permisos, en
+un servicio Render. Cloudflare Workers sirve React compilado y reenvía `/api/*` al
+backend, conservando sesión/CSRF y sin reintentar escrituras. No se sustituye el negocio
+por mocks. Se autoriza un entrypoint remoto de demo con opt-in explícito, allowlists
+de Host/origen exactos, cookies Secure y límite global de intentos de autenticación.
+El entrypoint local y el repositorio original conservan su modalidad aprobada.
+
+El experimento usa `plan: free`, sin disco persistente ni cambio a plan pago. Sus datos
+de prueba pueden perderse cuando Render suspenda/reinicie/republique el proceso; no es
+una instalación comercial ni una solución durable. Solo se inicializa una base nueva
+aislada; una existente incompatible se rechaza, sin reparación ni migración implícita.
+No incorpora funciones futuras F6/F7 ni certifica impresión física. Guía y validación:
+[CLOUD_DEMO.md](CLOUD_DEMO.md). La prueba estática anterior no equivale a esta demo funcional.

@@ -31,7 +31,16 @@ ORIGINS = frozenset(
 )
 
 
-def create_app(db_path: Path | None = None) -> FastAPI:
+def create_app(
+    db_path: Path | None = None,
+    *,
+    allowed_origins: frozenset[str] = ORIGINS,
+    allowed_hosts: tuple[str, ...] = ("127.0.0.1", "localhost"),
+    secure_cookies: bool = False,
+) -> FastAPI:
+    # Explicit parameters for the separate cloud demo; local defaults remain loopback-only.
+    if not allowed_origins or not allowed_hosts or any("*" in item for item in (*allowed_origins, *allowed_hosts)):
+        raise ValueError("Se requieren orígenes y hosts explícitos")
     @asynccontextmanager
     async def lifespan(application: FastAPI) -> AsyncIterator[None]:
         engine = build_engine(db_path)
@@ -55,14 +64,15 @@ def create_app(db_path: Path | None = None) -> FastAPI:
             engine.dispose()
 
     application = FastAPI(title="Gestión Inteligente POS", version="0.5.1", lifespan=lifespan)
+    application.state.secure_cookies = secure_cookies
 
     @application.middleware("http")
     async def local_security(
         request: Request, call_next: Callable[[Request], Awaitable[Response]]
     ) -> Response:
         origin = request.headers.get("origin")
-        if (origin is not None and origin not in ORIGINS) or (
-            request.method not in {"GET", "HEAD"} and origin not in ORIGINS
+        if (origin is not None and origin not in allowed_origins) or (
+            request.method not in {"GET", "HEAD"} and origin not in allowed_origins
         ):
             return JSONResponse({"detail": "Origen no permitido"}, status_code=403)
         if (
@@ -76,7 +86,7 @@ def create_app(db_path: Path | None = None) -> FastAPI:
         response.headers["Content-Security-Policy"] = "frame-ancestors 'none'"
         return response
 
-    application.add_middleware(TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost"])
+    application.add_middleware(TrustedHostMiddleware, allowed_hosts=list(allowed_hosts))
 
     @application.exception_handler(IdentityError)
     async def identity_error(request: Request, exc: IdentityError) -> JSONResponse:

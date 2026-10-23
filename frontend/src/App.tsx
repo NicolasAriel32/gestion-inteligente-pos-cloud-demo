@@ -10,6 +10,7 @@ import './style.css'
 const CatalogWorkspace = lazy(() => import('./CatalogWorkspace'))
 const ReportsWorkspace = lazy(() => import('./ReportsWorkspace'))
 const SalesWorkspace = lazy(() => import('./SalesWorkspace'))
+const cloudDemo = import.meta.env.MODE === 'cloud-demo'
 const sectionCopy = {
   reports: ['REPORTES', 'Tu negocio, en números.', 'Ventas reales para acompañar tus decisiones.'],
   catalog: ['CATÁLOGO', 'Productos para tu negocio.', 'Precios claros y productos organizados.'],
@@ -28,7 +29,7 @@ async function readView(): Promise<View> {
 export default function App() {
   const [section, setSection] = useState<'team' | 'catalog' | 'inventory' | 'checkout' | 'history' | 'reports'>('team')
   const [view, setView] = useState<View | null>(null)
-  const [health, setHealth] = useState('Comprobando conexión local…')
+  const [health, setHealth] = useState(cloudDemo ? 'Conectando con la demo…' : 'Comprobando conexión local…')
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
   const [noticeFocus, setNoticeFocus] = useState(false)
@@ -42,15 +43,18 @@ export default function App() {
   const copy = section === 'team' ? session?.user.role === 'ADMIN' ? ['PERSONAS Y ACCESOS', 'Un buen equipo empieza acá.', 'Gestioná quién puede ingresar. Cada persona, con su propia cuenta.'] : ['MI CUENTA', `Hola, ${session?.user.username ?? ''}.`, 'Tu sesión está iniciada y tu acceso está listo.'] : sectionCopy[section]
   useEffect(() => {
     let active = true
-    getHealth().then(() => { if (active) setHealth('Servidor local conectado') })
-      .catch(() => { if (active) setHealth('Servidor local no disponible') })
+    getHealth().then(() => { if (active) setHealth(cloudDemo ? 'Demo conectada' : 'Servidor local conectado') })
+      .catch(() => { if (active) setHealth(cloudDemo ? 'Demo todavía no disponible' : 'Servidor local no disponible') })
     readView().then(value => { if (active) setView(value) })
-      .catch(() => { if (active) setError('No pudimos cargar tus datos. Comprobá que la aplicación local esté iniciada y volvé a intentar.') })
+      .catch(() => { if (active) setError(cloudDemo ? 'No pudimos conectar con la demo. Si el servidor gratuito estaba suspendido, esperá un minuto y volvé a intentar.' : 'No pudimos cargar tus datos. Comprobá que la aplicación local esté iniciada y volvé a intentar.') })
     return () => { active = false }
   }, [])
   useEffect(() => { if (stage !== 'loading') heading.current?.focus() }, [stage, section])
 
-  async function refresh() { setView(await readView()) }
+  async function refresh() {
+    setView(await readView())
+    if (cloudDemo) setHealth('Demo conectada')
+  }
   function navigate(next: typeof section) {
     if (next === section) return
     setError(''); setNotice(''); setNoticeFocus(false); setSection(next)
@@ -88,6 +92,7 @@ export default function App() {
         <div className="topbar__actions">{session && <Button variant="secondary" disabled={busy} onClick={() => void buttonAction(() => identity.logout(session.csrf_token))}><Icon name="exit" />Cerrar sesión</Button>}<HelpCenter key={`${stage}-${session?.user.id ?? 'guest'}`} role={session?.user.role ?? 'GUEST'} disabled={busy} /></div>
       </div>
     </header>
+    {cloudDemo && <aside className="cloud-demo-banner" role="note"><strong>DEMO DE PRUEBA</strong> · Todas las funciones implementadas usan el servidor remoto. Usá datos ficticios: pueden perderse cuando el servidor gratuito se reinicie o suspenda. No es una caja de producción.</aside>}
     <main id="main" tabIndex={-1} className={session ? 'workspace' : 'welcome'}>
       {session ? <>
         <div className="workspace__heading">
@@ -115,7 +120,7 @@ export default function App() {
             </li>)}</ul>}
             <p className="panel-note"><Icon name="lock" />Solo vos, como administrador, podés gestionar estas cuentas.</p>
           </Panel>
-          <Panel className="create-panel"><CredentialForm onBusyChange={setBusy} kind="employee" title="Crear empleado" disabled={busy} submit={async value => {
+          <Panel className="create-panel"><CredentialForm remoteDemo={cloudDemo} onBusyChange={setBusy} kind="employee" title="Crear empleado" disabled={busy} submit={async value => {
             setError(''); setNotice(''); setNoticeFocus(false)
             await authenticated(() => identity.createEmployee(value, session.csrf_token))
             setNotice(`La cuenta de ${value.username.toLowerCase()} ya está creada.`)
@@ -126,17 +131,17 @@ export default function App() {
           <span className="eyebrow">GESTIÓN SIMPLE. TODOS LOS DÍAS.</span>
           <h1 ref={heading} tabIndex={-1}>{stage === 'setup' ? <>El primer paso,<br /><span>bien acompañado.</span></> : <>Qué bueno verte.<br /><span>Sigamos.</span></>}</h1>
           <p className="welcome__intro">{stage === 'setup' ? 'Dejá listo el acceso a tu negocio. Empezamos por tu cuenta de administrador.' : 'Un lugar para vos y tu equipo. Ingresá con tu cuenta y continuá con tranquilidad.'}</p>
-          <div className="welcome__benefits"><span><Icon name="users" />Una cuenta por persona</span><span><Icon name="lock" />Tus datos, en tu equipo</span><span><Icon name="check" />Sin conexión obligatoria</span></div>
+          <div className="welcome__benefits"><span><Icon name="users" />Una cuenta por persona</span><span><Icon name="lock" />{cloudDemo ? 'Datos ficticios en la demo' : 'Tus datos, en tu equipo'}</span><span><Icon name="check" />{cloudDemo ? 'Acceso desde el navegador' : 'Sin conexión obligatoria'}</span></div>
           <p className="welcome__signature">Cerca de tu negocio.<br /><strong>Listo para tu día.</strong></p>
         </div>
         <div className="welcome__form-area">
           {notice && <Notice focus={noticeFocus}>{notice}</Notice>}
           {error && <Notice tone="error" focus>{error}</Notice>}
-          {!view ? <Panel><div className="loading">{error ? <Icon name="alert" /> : <span className="spinner" aria-hidden="true" />}<h2>{error ? 'No pudimos conectar' : 'Preparando tu acceso…'}</h2>{error && <Button onClick={() => { setError(''); void refresh().catch(() => setError('La aplicación local sigue sin responder. Volvé a intentar.')) }}>Volver a intentar</Button>}</div></Panel> : <Panel><CredentialForm key={stage} kind={stage === 'setup' ? 'setup' : 'login'} title={stage === 'setup' ? 'Crear administrador' : 'Ingresar'} submit={async (value, token) => {
+          {!view ? <Panel><div className="loading">{error ? <Icon name="alert" /> : <span className="spinner" aria-hidden="true" />}<h2>{error ? 'No pudimos conectar' : 'Preparando tu acceso…'}</h2>{error && <Button onClick={() => { setError(''); void refresh().catch(() => setError(cloudDemo ? 'La demo sigue sin responder. Esperá un minuto y volvé a intentar.' : 'La aplicación local sigue sin responder. Volvé a intentar.')) }}>Volver a intentar</Button>}</div></Panel> : <Panel><CredentialForm remoteDemo={cloudDemo} key={stage} kind={stage === 'setup' ? 'setup' : 'login'} title={stage === 'setup' ? 'Crear administrador' : 'Ingresar'} submit={async (value, token) => {
             setError('')
             if (stage === 'setup') {
               await identity.initialize(value, token)
-              setNotice('Tu cuenta está lista. Eliminá el archivo del secreto e ingresá con tus datos.')
+              setNotice(cloudDemo ? 'Tu cuenta de prueba está lista. Ingresá con tus datos.' : 'Tu cuenta está lista. Eliminá el archivo del secreto e ingresá con tus datos.')
             } else { await identity.login(value); setNotice('') }
             await refresh()
           }} /></Panel>}

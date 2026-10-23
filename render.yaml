@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: gestion-inteligente-pos-cloud-demo-api
+    runtime: python
+    plan: free
+    repo: https://github.com/NicolasAriel32/gestion-inteligente-pos-cloud-demo
+    branch: main
+    rootDir: backend
+    buildCommand: pip install -r requirements-cloud-demo.txt .
+    startCommand: python -m app.cloud_demo
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.14
+      - key: POS_CLOUD_DEMO
+        value: "1"
+      - key: POS_PUBLIC_ORIGIN
+        sync: false
+      - key: POS_DEMO_SETUP_TOKEN
+        generateValue: true
+      - key: LOCALAPPDATA
+        value: /tmp/gestion-inteligente-pos-cloud-demo

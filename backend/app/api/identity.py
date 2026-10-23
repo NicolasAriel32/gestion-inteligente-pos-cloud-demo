@@ -86,7 +86,7 @@ def login(body: Credentials, request: Request, response: Response) -> SessionRes
         max_age=IdentityService.session_seconds,
         httponly=True,
         samesite="strict",
-        secure=False,
+        secure=request.app.state.secure_cookies,
         path="/api",
     )
     return SessionResponse(user=public(user), csrf_token=csrf_token(value))
@@ -102,7 +102,10 @@ def me(request: Request) -> SessionResponse:
 def logout(request: Request) -> Response:
     service(request).logout(token(request, csrf=True))
     response = Response(status_code=204)
-    response.delete_cookie(COOKIE, path="/api", httponly=True, samesite="strict")
+    response.delete_cookie(
+        COOKIE, path="/api", httponly=True, samesite="strict",
+        secure=request.app.state.secure_cookies,
+    )
     return response
 
 

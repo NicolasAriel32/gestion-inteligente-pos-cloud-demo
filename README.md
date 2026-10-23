@@ -1,5 +1,11 @@
 # Gestión Inteligente POS
 
+**Este es el clon de demo funcional remota `gestion-inteligente-pos-cloud-demo`.**
+Abrí [la guía para desplegar en Cloudflare y Render](docs/CLOUD_DEMO.md).
+El repositorio original `NicolasAriel32/gestion-inteligente-pos` conserva la versión para PC.
+La demo requiere ambos servicios: publicar solo el Worker no inicia el servidor Python.
+El plan gratuito de Render usa datos efímeros; usá datos ficticios.
+
 Sistema de gestión y punto de venta local para un kiosco o pequeño comercio argentino.
 **Versión 0.5.1: identidad, catálogo, inventario, caja, historial y reportes ADMIN locales.**
 F4 aprobada para integración mediante PR #4; la prueba física de impresoras de 58 mm sigue pendiente.

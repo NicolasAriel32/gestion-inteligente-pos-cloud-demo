@@ -1,5 +1,17 @@
 # AGENTS.md — instrucciones para agentes de desarrollo
 
+## Repositorio de demo remota autorizado — 2026-10-23
+
+Este clon independiente `gestion-inteligente-pos-cloud-demo` conserva el POS 0.5.1
+y agrega una demo funcional por enlace, solicitada por el propietario. Leer primero
+`docs/CLOUD_DEMO.md` y ADR-015. Cloudflare sirve React y actúa como proxy; Render
+ejecuta los casos de uso FastAPI/SQLite originales, con datos ficticios y efímeros.
+La excepción de acceso remoto se limita al entrypoint explícito `app.cloud_demo`,
+con opt-in, origen/Host exactos y cookies Secure. `python -m app` conserva loopback.
+No modificar el repositorio original ni contratar planes pagos. No eliminar ni migrar
+automáticamente bases existentes. Las specs históricas siguientes describen el producto
+local; este experimento no certifica distribución Windows, hardware ni uso en producción.
+
 ## Objetivo
 Desarrollar Gestión Inteligente POS: sistema local-first para una caja de kiosco argentino.
 El repositorio contiene especificaciones y software local F1–F5 (versión 0.5.1).
