@@ -164,10 +164,9 @@ la descarga del navegador había fallado y el runtime local de Wrangler informó
 restricción del entorno (`uv_interface_addresses`). No se certifican impresora física
 ni permisos de la red corporativa. El despliegue real requiere crear ambos servicios.
 
-Al cerrar la preparación, la creación del nuevo repositorio quedó bloqueada porque
-GitHub rechazó el login del navegador; el conector existente permite editar repositorios
-pero no crearlos. El código se conserva en la rama `test/cloudflare-full-demo` del
-repositorio fuente, sin cambiar `main`, hasta importarlo en el repositorio independiente.
+El código de esta guía quedó preparado en el repositorio independiente
+`NicolasAriel32/gestion-inteligente-pos-cloud-demo`, en la rama `main`. El repositorio
+original conserva su configuración local y no recibe estos cambios.
 
 ## Referencias oficiales
 
